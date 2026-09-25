@@ -5,7 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    Base:'/tkbtb/',
+    base: process.env.BASE_URL || (process.env.GITHUB_ACTIONS ? '/tkbtb/' : '/'),
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
