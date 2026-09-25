@@ -521,68 +521,6 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
 export const CURRICULUM_GRADES: Grade[] = [1, 2, 3, 4, 5];
 
 /**
- * Generate tailored CV 2345 Special Needs Student Objectives (Học sinh khuyết tật học hòa nhập)
- * Specifically synchronized for Lớp 1A (Cô Chi) and Lớp 5B (Cô Huế), and configurable for any class.
- */
-export function getSpecialNeedsObjectiveForLesson(
-  grade: Grade,
-  subject: string,
-  lessonTitle?: string,
-  className?: string
-): string {
-  const normSub = (subject || "").toLowerCase();
-  const is1A = className === "1A" || grade === 1;
-  const is5B = className === "5B" || grade === 5;
-
-  if (is1A) {
-    if (normSub.includes("tiếng việt") || normSub.includes("tv") || normSub.includes("tctv")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Nhận biết được âm, chữ cái mới của bài học; phát âm và tô/viết chữ cái cơ bản theo mẫu; được cô giáo hướng dẫn cầm bút và bạn cùng bàn giúp đỡ đọc nối tiếp.";
-    }
-    if (normSub.includes("toán") || normSub.includes("tct")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Nhận biết và gọi đúng tên các số lượng, hình dạng cơ bản trong bài học qua đồ dùng trực quan; hoàn thành nhiệm vụ đếm số đơn giản với sự trợ giúp của giáo viên.";
-    }
-    if (normSub.includes("hoạt động trải nghiệm") || normSub.includes("hđtn")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Tự tin hòa đồng cùng tập thể; tham gia các hoạt động chào cờ, sinh hoạt lớp, múa hát hoặc trò chơi vận động nhẹ nhàng theo khả năng dưới sự khích lệ của cô giáo.";
-    }
-    if (normSub.includes("đạo đức")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Nhận biết hành vi đúng - sai cơ bản qua tranh ảnh; biết chào hỏi thầy cô và thân thiện cùng bạn bè trong lớp.";
-    }
-    if (normSub.includes("tự nhiên") || normSub.includes("tnxh")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Quan sát tranh ảnh, chỉ và nêu được tên các sự vật, đồ dùng quen thuộc trong bài học theo sự gợi ý của cô giáo.";
-    }
-    return "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và tham gia các hoạt động học tập cùng bạn theo khả năng; nhận biết nội dung cốt lõi của bài học và hoàn thành nhiệm vụ cơ bản với sự hỗ trợ của cô giáo và bạn bè.";
-  }
-
-  if (is5B) {
-    if (normSub.includes("tiếng việt") || normSub.includes("tv") || normSub.includes("tctv")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Đọc trơn đoạn văn ngắn, nắm được ý chính đơn giản của bài; tham gia trả lời câu hỏi ở mức độ nhận biết; hoàn thành viết đoạn văn/bài tập cơ bản với sự đồng hành của bạn học đôi bạn cùng tiến.";
-    }
-    if (normSub.includes("toán") || normSub.includes("tct")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức cốt lõi (nhận diện khái niệm, công thức tính toán đơn giản); làm được các phép tính cơ bản ở bài tập 1; tự tin hoàn thành nhiệm vụ học tập dưới sự hướng dẫn của cô giáo.";
-    }
-    if (normSub.includes("khoa học") || normSub.includes("kh")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Quan sát hình ảnh và video thực tế, nhận biết được các sự vật, hiện tượng khoa học gần gũi; nêu ý kiến đơn giản khi hoạt động nhóm.";
-    }
-    if (normSub.includes("lịch sử") || normSub.includes("địa lí") || normSub.includes("ls-đl") || normSub.includes("lsđl")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nhận biết được mốc sự kiện, nhân vật lịch sử hoặc đặc điểm địa lí tiêu biểu qua tranh ảnh minh họa; lắng nghe và ghi nhớ kiến thức cốt lõi.";
-    }
-    if (normSub.includes("hoạt động trải nghiệm") || normSub.includes("hđtn")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Tích cực tham gia các hoạt động tập thể lớp, diễn đàn học đường theo khả năng; rèn luyện sự tự tin, kỹ năng tự phục vụ và giao tiếp hòa đồng.";
-    }
-    if (normSub.includes("công nghệ") || normSub.includes("cn")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nhận biết được các chi tiết, dụng cụ cơ bản; tham gia thao tác lắp ráp/trải nghiệm đơn giản cùng nhóm bạn.";
-    }
-    if (normSub.includes("đạo đức")) {
-      return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nhận thức được các chuẩn mực hành vi tốt; biết yêu thương, chia sẻ và có ý thức giữ gìn nội quy lớp học.";
-    }
-    return "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm vững kiến thức trọng tâm bài học; thực hiện các yêu cầu học tập ở mức độ cơ bản phù hợp với khả năng nhận thức dưới sự hướng dẫn của cô giáo và bạn bè.";
-  }
-
-  // General fallback for other classes if enabled
-  return `Đối với học sinh khuyết tật học hòa nhập: Tham gia các hoạt động học tập cùng bạn theo khả năng; nắm bắt được kiến thức cốt lõi của bài học và hoàn thành các nhiệm vụ cơ bản với sự hỗ trợ của giáo viên và bạn bè.`;
-}
-
-/**
  * Generate full week Lesson Plans (KHBD) for all items in the schedule
  * When schoolInfo.teacherType === "homeroom", specialist subjects (taught by specialist teachers)
  * are excluded by default so that homeroom teachers only generate KHBD for their directly taught subjects.
@@ -651,16 +589,6 @@ export function generateFullWeekLessonPlans(
     const currentPeriodInDay = dayCounters[day];
 
     const itemGrade = (parseInt(item.className.charAt(0)) as Grade) || schoolInfo.grade || 5;
-    const planClass = item.className || schoolInfo.className || "5A";
-    const isSpecialNeedsPlan = 
-      Boolean(schoolInfo.hasSpecialNeedsStudent) ||
-      planClass === "1A" || planClass === "5B" ||
-      schoolInfo.className === "1A" || schoolInfo.className === "5B" ||
-      (schoolInfo.teacherName && (schoolInfo.teacherName.toLowerCase().includes("chi") || schoolInfo.teacherName.toLowerCase().includes("huế") || schoolInfo.teacherName.toLowerCase().includes("hue")));
-
-    const specialNeedsObj = isSpecialNeedsPlan
-      ? getSpecialNeedsObjectiveForLesson(itemGrade, item.subject, item.lessonTitle, planClass)
-      : undefined;
 
     const subLowerCheck = item.subject.toLowerCase();
     const isSpecialSubject = subLowerCheck.includes("tiếng anh") || subLowerCheck.includes("anh văn") || subLowerCheck.includes("ta") || subLowerCheck.includes("âm nhạc") || subLowerCheck.includes("an");
@@ -706,10 +634,6 @@ export function generateFullWeekLessonPlans(
           ...act,
           name: normalizeActivityName(act.name),
         })),
-        objectives: {
-          ...sp.objectives,
-          specialNeedsObjective: specialNeedsObj || sp.objectives.specialNeedsObjective,
-        },
       });
       return;
     }
@@ -823,7 +747,6 @@ export function generateFullWeekLessonPlans(
           "Chăm chỉ, trung thực: Cần cù trong học tập, trung thực trong làm bài và sinh hoạt lớp.",
           "Trách nhiệm: Có ý thức bảo vệ của công, giữ gìn vệ sinh chung và bảo vệ môi trường sống."
         ],
-        specialNeedsObjective: specialNeedsObj,
         integrations: {
           ai: item.integrationNotes?.includes("AI") 
             ? (item.integrationNotes.split("|").find(s => s.includes("AI"))?.trim() || "Tích hợp AI: Làm quen ứng dụng công nghệ trí tuệ nhân tạo hỗ trợ học tập.")

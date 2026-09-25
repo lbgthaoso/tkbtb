@@ -1,5 +1,5 @@
 import { DayOfWeek, Grade, LessonPlan, MasterTimetable, ScheduleItem, SchoolInfo, TeacherType } from "../types";
-import { DEFAULT_CLASSES, DEFAULT_TEACHERS, generateWeeklyScheduleFromTimetable, calculateWeekDateRange, TeacherInfo, isSpecialNeedsClassOrTeacher, getDefaultSpecialNeedsDescription } from "../data/defaultTimetables";
+import { DEFAULT_CLASSES, DEFAULT_TEACHERS, generateWeeklyScheduleFromTimetable, calculateWeekDateRange, TeacherInfo } from "../data/defaultTimetables";
 import { generateFullWeekLessonPlans } from "../data/curriculumData";
 
 /**
@@ -65,7 +65,6 @@ export function getScheduleAndPlansForTeacher(
   }
 
   const weekRange = calculateWeekDateRange(selectedWeek);
-  const hasSpecialNeeds = isSpecialNeedsClassOrTeacher(targetClass, teacher.name) || Boolean(teacher.hasSpecialNeedsStudent);
   const teacherSchoolInfo: SchoolInfo = {
     ...currentSchoolInfo,
     teacherName: teacher.name,
@@ -77,10 +76,6 @@ export function getScheduleAndPlansForTeacher(
     week: selectedWeek,
     startDate: weekRange.startDate,
     endDate: weekRange.endDate,
-    hasSpecialNeedsStudent: hasSpecialNeeds,
-    specialNeedsDescription: hasSpecialNeeds 
-      ? (teacher.specialNeedsDescription || getDefaultSpecialNeedsDescription(targetClass, targetGrade)) 
-      : currentSchoolInfo.specialNeedsDescription,
   };
 
   // Generate the full schedule from the master timetable

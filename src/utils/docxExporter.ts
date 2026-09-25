@@ -1570,19 +1570,10 @@ export async function exportLessonPlansDocx(
     );
 
     // 5. Yêu cầu cần đạt đối với học sinh khuyết tật (Chỉ nêu đối với những lớp có học sinh khuyết tật)
-    const hasSpecialNeedsForThisPlan = 
-      schoolInfo.hasSpecialNeedsStudent || 
-      Boolean(plan.objectives.specialNeedsObjective) || 
-      plan.className === "1A" || plan.className === "5B" || 
-      schoolInfo.className === "1A" || schoolInfo.className === "5B" ||
-      (schoolInfo.teacherName && (schoolInfo.teacherName.toLowerCase().includes("chi") || schoolInfo.teacherName.toLowerCase().includes("huế") || schoolInfo.teacherName.toLowerCase().includes("hue")));
-
-    if (hasSpecialNeedsForThisPlan) {
+    if (schoolInfo.hasSpecialNeedsStudent) {
       const specialNeedsText = plan.objectives.specialNeedsObjective ||
         schoolInfo.specialNeedsDescription ||
-        (plan.className === "1A" || plan.grade === 1
-          ? "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và nhận biết mặt chữ cái, chữ số cơ bản; tham gia hát múa, vận động, trò chơi cùng bạn theo khả năng; được cô giáo và các bạn quan tâm, khích lệ và hỗ trợ hoàn thành các nhiệm vụ học tập cơ bản."
-          : "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức trọng tâm cốt lõi của bài học; tham gia trả lời các câu hỏi nhận biết và thảo luận nhóm theo mức độ nhận thức; tự tin hoàn thành bài tập cơ bản với sự đồng hành, giúp đỡ của giáo viên và các bạn trong tổ.");
+        "Tham gia các hoạt động học tập cùng bạn theo khả năng; nhận biết được kiến thức cốt lõi của bài học và hoàn thành các nhiệm vụ cơ bản với sự hỗ trợ của giáo viên và bạn bè.";
       docChildren.push(
         new Paragraph({
           spacing: { after: 20 },
@@ -2080,19 +2071,10 @@ export async function exportCombinedAllInOneDocx(
     );
 
     // 5. Yêu cầu cần đạt đối với học sinh khuyết tật (Chỉ nêu đối với những lớp có học sinh khuyết tật)
-    const hasSpecialNeedsInCombo = 
-      schoolInfo.hasSpecialNeedsStudent || 
-      Boolean(plan.objectives.specialNeedsObjective) || 
-      plan.className === "1A" || plan.className === "5B" || 
-      schoolInfo.className === "1A" || schoolInfo.className === "5B" ||
-      (schoolInfo.teacherName && (schoolInfo.teacherName.toLowerCase().includes("chi") || schoolInfo.teacherName.toLowerCase().includes("huế") || schoolInfo.teacherName.toLowerCase().includes("hue")));
-
-    if (hasSpecialNeedsInCombo) {
+    if (schoolInfo.hasSpecialNeedsStudent) {
       const specialNeedsText = plan.objectives.specialNeedsObjective ||
         schoolInfo.specialNeedsDescription ||
-        (plan.className === "1A" || plan.grade === 1
-          ? "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và nhận biết mặt chữ cái, chữ số cơ bản; tham gia hát múa, vận động, trò chơi cùng bạn theo khả năng; được cô giáo và các bạn quan tâm, khích lệ và hỗ trợ hoàn thành các nhiệm vụ học tập cơ bản."
-          : "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức trọng tâm cốt lõi của bài học; tham gia trả lời các câu hỏi nhận biết và thảo luận nhóm theo mức độ nhận thức; tự tin hoàn thành bài tập cơ bản với sự đồng hành, giúp đỡ của giáo viên và các bạn trong tổ.");
+        "Tham gia các hoạt động học tập cùng bạn theo khả năng; nhận biết được kiến thức cốt lõi của bài học và hoàn thành các nhiệm vụ cơ bản với sự hỗ trợ của giáo viên và bạn bè.";
       docChildren.push(
         new Paragraph({
           spacing: { after: 20 },
@@ -2609,19 +2591,10 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
       );
 
       // 5. Yêu cầu cần đạt đối với học sinh khuyết tật (Chỉ nêu đối với những lớp có học sinh khuyết tật)
-      const hasSpecialNeedsInWeekly = 
-        schoolInfo.hasSpecialNeedsStudent || 
-        Boolean(plan.objectives.specialNeedsObjective) || 
-        plan.className === "1A" || plan.className === "5B" || 
-        schoolInfo.className === "1A" || schoolInfo.className === "5B" ||
-        (schoolInfo.teacherName && (schoolInfo.teacherName.toLowerCase().includes("chi") || schoolInfo.teacherName.toLowerCase().includes("huế") || schoolInfo.teacherName.toLowerCase().includes("hue")));
-
-      if (hasSpecialNeedsInWeekly) {
+      if (schoolInfo.hasSpecialNeedsStudent) {
         const specialNeedsText = plan.objectives.specialNeedsObjective ||
           schoolInfo.specialNeedsDescription ||
-          (plan.className === "1A" || plan.grade === 1
-            ? "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và nhận biết mặt chữ cái, chữ số cơ bản; tham gia hát múa, vận động, trò chơi cùng bạn theo khả năng; được cô giáo và các bạn quan tâm, khích lệ và hỗ trợ hoàn thành các nhiệm vụ học tập cơ bản."
-            : "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức trọng tâm cốt lõi của bài học; tham gia trả lời các câu hỏi nhận biết và thảo luận nhóm theo mức độ nhận thức; tự tin hoàn thành bài tập cơ bản với sự đồng hành, giúp đỡ của giáo viên và các bạn trong tổ.");
+          "Tham gia các hoạt động học tập cùng bạn theo khả năng; nhận biết được kiến thức cốt lõi của bài học và hoàn thành các nhiệm vụ cơ bản với sự hỗ trợ của giáo viên và bạn bè.";
         docChildren.push(
           new Paragraph({
             spacing: { after: 20 },
