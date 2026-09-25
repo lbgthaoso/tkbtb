@@ -518,10 +518,19 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                             <p><strong className="text-black">{isEn ? "3. Qualities: " : "3. Phẩm chất: "}</strong> {plan.objectives?.qualities?.join(" ")}</p>
                             
                             {/* 5. Yêu cầu cần đạt đối với học sinh khuyết tật (Chỉ nêu đối với những lớp có học sinh khuyết tật) */}
-                            {schoolInfo.hasSpecialNeedsStudent && (
-                              <div className="text-amber-950 bg-amber-50 p-2 border border-amber-300 mt-1">
-                                <strong className="text-amber-900">{isEn ? "5. Objectives for students with disabilities: " : "5. Yêu cầu cần đạt đối với học sinh khuyết tật: "}</strong>
-                                <span className="italic">{plan.objectives?.specialNeedsObjective || schoolInfo.specialNeedsDescription || "Tham gia các hoạt động học tập cùng bạn theo khả năng; nhận biết kiến thức cốt lõi và hoàn thành nhiệm vụ cơ bản với sự hỗ trợ của GV và bạn bè."}</span>
+                            {(schoolInfo.hasSpecialNeedsStudent || Boolean(plan.objectives?.specialNeedsObjective) || plan.className === "1A" || plan.className === "5B" || schoolInfo.className === "1A" || schoolInfo.className === "5B") && (
+                              <div className="text-amber-950 bg-amber-50 p-2.5 border border-amber-300 mt-1.5 shadow-[1px_1px_0px_rgba(180,83,9,0.2)]">
+                                <div className="flex items-center justify-between mb-0.5">
+                                  <strong className="text-amber-900 uppercase text-[10.5px]">
+                                    {isEn ? "5. Objectives for Students with Disabilities: " : "5. Yêu cầu cần đạt đối với học sinh khuyết tật: "}
+                                  </strong>
+                                  <span className="text-[9.5px] bg-amber-200 text-amber-900 px-1 py-0.2 font-bold uppercase">
+                                    {plan.className === "1A" ? "Lớp 1A - Cô Chi" : (plan.className === "5B" ? "Lớp 5B - Cô Huế" : "Hòa nhập")}
+                                  </span>
+                                </div>
+                                <span className="italic leading-relaxed text-[11px] block text-amber-950">
+                                  {plan.objectives?.specialNeedsObjective || schoolInfo.specialNeedsDescription || (plan.className === "1A" ? "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và nhận biết mặt chữ cái, chữ số cơ bản; tham gia hát múa, vận động, trò chơi cùng bạn theo khả năng; được cô giáo và các bạn quan tâm, khích lệ và hỗ trợ hoàn thành các nhiệm vụ học tập cơ bản." : "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức trọng tâm cốt lõi của bài học; tham gia trả lời các câu hỏi nhận biết và thảo luận nhóm theo mức độ nhận thức; tự tin hoàn thành bài tập cơ bản với sự đồng hành, giúp đỡ của giáo viên và các bạn trong tổ.")}
+                                </span>
                               </div>
                             )}
 
@@ -938,14 +947,43 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                   )}
 
                   {/* 5. Yêu cầu cần đạt đối với học sinh khuyết tật (Chỉ nêu đối với những lớp có học sinh khuyết tật) */}
-                  {schoolInfo.hasSpecialNeedsStudent && (
-                    <div className="bg-amber-50 p-3 border border-amber-300 mt-2">
-                      <h4 className="font-bold text-amber-950 uppercase text-[11px] tracking-wide">
-                        {isEn ? "5. Objectives for Students with Disabilities:" : "5. Yêu cầu cần đạt đối với học sinh khuyết tật:"}
-                      </h4>
-                      <p className="text-amber-900 mt-0.5 italic leading-relaxed text-xs">
-                        {activePlan.objectives.specialNeedsObjective || schoolInfo.specialNeedsDescription || "Tham gia các hoạt động học tập cùng bạn theo khả năng; nhận biết kiến thức cốt lõi và hoàn thành nhiệm vụ cơ bản với sự hỗ trợ của GV và bạn bè."}
-                      </p>
+                  {(schoolInfo.hasSpecialNeedsStudent || Boolean(activePlan.objectives.specialNeedsObjective) || activePlan.className === "1A" || activePlan.className === "5B" || schoolInfo.className === "1A" || schoolInfo.className === "5B") && (
+                    <div className="bg-amber-50 p-3.5 border border-amber-300 mt-2 shadow-[1px_1px_0px_rgba(180,83,9,0.2)]">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-bold text-amber-950 uppercase text-[11px] tracking-wide flex items-center gap-1.5">
+                          <span>{isEn ? "5. Objectives for Students with Disabilities:" : "5. Yêu cầu cần đạt đối với học sinh khuyết tật:"}</span>
+                        </h4>
+                        <span className="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 border border-amber-400 font-mono font-bold">
+                          {activePlan.className === "1A" ? "Lớp 1A - Cô Chi" : (activePlan.className === "5B" ? "Lớp 5B - Cô Huế" : "Hòa nhập")}
+                        </span>
+                      </div>
+                      {isEditing ? (
+                        <div className="mt-1 space-y-1">
+                          <label className="text-[10px] font-bold text-amber-900 uppercase block">
+                            {isEn ? "Edit special needs learning objective:" : "Điều chỉnh mục tiêu riêng cho học sinh khuyết tật:"}
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={editFormData?.objectives?.specialNeedsObjective || ""}
+                            onChange={(e) => {
+                              if (!editFormData) return;
+                              setEditFormData({
+                                ...editFormData,
+                                objectives: {
+                                  ...editFormData.objectives,
+                                  specialNeedsObjective: e.target.value,
+                                },
+                              });
+                            }}
+                            className="w-full p-2 border border-amber-400 text-xs font-serif bg-white leading-relaxed focus:outline-none"
+                            placeholder="Nhập yêu cầu cần đạt riêng đối với học sinh khuyết tật..."
+                          />
+                        </div>
+                      ) : (
+                        <p className="text-amber-950 mt-0.5 italic leading-relaxed text-xs">
+                          {activePlan.objectives.specialNeedsObjective || schoolInfo.specialNeedsDescription || (activePlan.className === "1A" ? "Đối với học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và nhận biết mặt chữ cái, chữ số cơ bản; tham gia hát múa, vận động, trò chơi cùng bạn theo khả năng; được cô giáo và các bạn quan tâm, khích lệ và hỗ trợ hoàn thành các nhiệm vụ học tập cơ bản." : "Đối với học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức trọng tâm cốt lõi của bài học; tham gia trả lời các câu hỏi nhận biết và thảo luận nhóm theo mức độ nhận thức; tự tin hoàn thành bài tập cơ bản với sự đồng hành, giúp đỡ của giáo viên và các bạn trong tổ.")}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

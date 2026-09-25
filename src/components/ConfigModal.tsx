@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Grade, SchoolInfo, TeacherType } from "../types";
 import { X, Save, User, School, Calendar, Type, Building2, BookOpen, Layers, CheckSquare, Square, Award } from "lucide-react";
-import { DEFAULT_TEACHERS, DEFAULT_CLASSES, calculateWeekDateRange } from "../data/defaultTimetables";
+import { DEFAULT_TEACHERS, DEFAULT_CLASSES, calculateWeekDateRange, isSpecialNeedsClassOrTeacher, getDefaultSpecialNeedsDescription } from "../data/defaultTimetables";
 
 interface ConfigModalProps {
   isOpen: boolean;
@@ -43,12 +43,22 @@ export const ConfigModal: React.FC<ConfigModalProps> = ({
   const selectPredefinedTeacher = (name: string) => {
     const matched = DEFAULT_TEACHERS.find((t) => t.name === name);
     if (matched) {
+      const assignedClass = matched.assignedClasses?.[0] || formData.className;
+      const gradeNum = parseInt(assignedClass.charAt(0)) as Grade || formData.grade;
+      const isSN = isSpecialNeedsClassOrTeacher(assignedClass, matched.name) || Boolean(matched.hasSpecialNeedsStudent);
+
       setFormData({
         ...formData,
         teacherName: matched.name,
         teacherType: matched.type as TeacherType,
+        className: matched.type === "homeroom" && matched.assignedClasses ? assignedClass : formData.className,
+        grade: matched.type === "homeroom" && !isNaN(gradeNum) ? gradeNum : formData.grade,
         specialistSubject: matched.specialistSubject || formData.specialistSubject || "Tiếng Anh",
         assignedClasses: matched.assignedClasses || formData.assignedClasses || DEFAULT_CLASSES,
+        hasSpecialNeedsStudent: isSN,
+        specialNeedsDescription: isSN
+          ? (matched.specialNeedsDescription || getDefaultSpecialNeedsDescription(assignedClass, gradeNum))
+          : formData.specialNeedsDescription,
       });
     }
   };
@@ -302,7 +312,14 @@ export const ConfigModal: React.FC<ConfigModalProps> = ({
                     onChange={(e) => {
                       const g = parseInt(e.target.value) as Grade;
                       const matchedClass = availableClasses.find((c) => c.startsWith(String(g))) || `${g}A`;
-                      setFormData({ ...formData, grade: g, className: matchedClass });
+                      const isSN = isSpecialNeedsClassOrTeacher(matchedClass, formData.teacherName);
+                      setFormData({
+                        ...formData,
+                        grade: g,
+                        className: matchedClass,
+                        hasSpecialNeedsStudent: isSN ? true : formData.hasSpecialNeedsStudent,
+                        specialNeedsDescription: isSN ? getDefaultSpecialNeedsDescription(matchedClass, g) : formData.specialNeedsDescription,
+                      });
                     }}
                     className="w-full px-3 py-2 text-xs border border-black bg-stone-50 focus:outline-none font-bold"
                   >
@@ -318,7 +335,16 @@ export const ConfigModal: React.FC<ConfigModalProps> = ({
                   <input
                     type="text"
                     value={formData.className}
-                    onChange={(e) => setFormData({ ...formData, className: e.target.value })}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      const isSN = isSpecialNeedsClassOrTeacher(val, formData.teacherName);
+                      setFormData({
+                        ...formData,
+                        className: val,
+                        hasSpecialNeedsStudent: isSN ? true : formData.hasSpecialNeedsStudent,
+                        specialNeedsDescription: isSN ? getDefaultSpecialNeedsDescription(val, formData.grade) : formData.specialNeedsDescription,
+                      });
+                    }}
                     placeholder="5A, 1A, 2/2..."
                     className="w-full px-3 py-2 text-xs border border-black bg-stone-50 focus:outline-none font-bold text-black"
                   />
