@@ -2186,20 +2186,35 @@ export async function exportCombinedAllInOneDocx(
     ];
 
     plan.activities.forEach((act) => {
+      const teacherParagraphs: Paragraph[] = [
+        new Paragraph({
+          spacing: { after: 30 },
+          children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })],
+        }),
+        new Paragraph({
+          spacing: { after: 40 },
+          children: [
+            new TextRun({ text: `- Mục tiêu: `, bold: true, font, size: baseSize }),
+            new TextRun({ text: act.objective, font, size: baseSize }),
+          ],
+        }),
+        ...createActivityCellParagraphs(act.teacherActivity, font, baseSize, "- Cách tiến hành:")
+      ];
+
+      const studentParagraphs: Paragraph[] = [
+        ...createActivityCellParagraphs(act.studentActivity, font, baseSize)
+      ];
+
       activityRows.push(
         new TableRow({
           children: [
             new TableCell({
               width: { size: colHalfWidth, type: WidthType.DXA },
-              children: [
-                new Paragraph({ children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })] }),
-                new Paragraph({ children: [new TextRun({ text: `- Mục tiêu: `, bold: true, font, size: baseSize }), new TextRun({ text: act.objective, font, size: baseSize })] }),
-                new Paragraph({ children: [new TextRun({ text: `- Cách tiến hành: `, bold: true, font, size: baseSize }), new TextRun({ text: act.teacherActivity, font, size: baseSize })] }),
-              ],
+              children: teacherParagraphs,
             }),
             new TableCell({
               width: { size: colHalfWidth, type: WidthType.DXA },
-              children: [new Paragraph({ children: [new TextRun({ text: act.studentActivity, font, size: baseSize })] })],
+              children: studentParagraphs,
             }),
           ],
         })

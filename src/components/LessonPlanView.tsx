@@ -137,6 +137,36 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
     setIsEditing(false);
   };
 
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditFormData(null);
+  };
+
+  const handleAddActivity = () => {
+    if (!editFormData) return;
+    const newIndex = editFormData.activities.length + 1;
+    const newAct = {
+      id: `act_${Date.now()}`,
+      name: `${newIndex}. Hoạt động tiếp nối`,
+      objective: "Học sinh củng cố và vận dụng kiến thức bài học.",
+      teacherActivity: "- GV giao nhiệm vụ và hướng dẫn học sinh thực hiện.\n- GV quan sát, bao quát lớp và giúp đỡ học sinh lúng túng.\n- GV nhận xét, tuyên dương.",
+      studentActivity: "- HS tiếp nhận nhiệm vụ, thảo luận theo nhóm hoặc cá nhân.\n- HS báo cáo kết quả và tham gia chia sẻ trước lớp.\n- Lắng nghe nhận xét từ GV và bạn bè.",
+    };
+    setEditFormData({
+      ...editFormData,
+      activities: [...editFormData.activities, newAct],
+    });
+  };
+
+  const handleRemoveActivity = (index: number) => {
+    if (!editFormData || editFormData.activities.length <= 1) return;
+    const updated = editFormData.activities.filter((_, idx) => idx !== index);
+    setEditFormData({
+      ...editFormData,
+      activities: updated,
+    });
+  };
+
   const handleActivityChange = (index: number, field: "name" | "objective" | "teacherActivity" | "studentActivity", value: string) => {
     if (!editFormData) return;
     const newActs = [...editFormData.activities];
@@ -537,31 +567,44 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                           </div>
                         </div>
 
-                        {/* III. Các hoạt động dạy học chủ yếu */}
+                        {/* III. Các hoạt động dạy học chủ yếu (Bảng 2 cột chuẩn CV 2345/BGDĐT) */}
                         <div className="border border-black overflow-x-auto bg-white">
                           <table className="w-full text-xs border-collapse">
                             <thead>
-                              <tr className="bg-stone-100 border-b border-black text-black font-bold">
-                                <th className="py-2 px-3 text-left w-32 border-r border-black">{isEn ? "Activity" : "Hoạt Động"}</th>
-                                <th className="py-2 px-3 text-left border-r border-black w-1/2">{isEn ? "Teacher's Activities" : "Hoạt Động Của Giáo Viên"}</th>
-                                <th className="py-2 px-3 text-left">{isEn ? "Students' Activities" : "Hoạt Động Của Học Sinh"}</th>
+                              <tr className="bg-stone-100 border-b border-black text-black font-bold uppercase text-[10.5px]">
+                                <th className="py-2.5 px-3 text-center border-r border-black w-1/2">
+                                  {isEn ? "TEACHER'S ACTIVITIES" : "HOẠT ĐỘNG CỦA GIÁO VIÊN"}
+                                </th>
+                                <th className="py-2.5 px-3 text-center w-1/2">
+                                  {isEn ? "STUDENTS' ACTIVITIES" : "HOẠT ĐỘNG CỦA HỌC SINH"}
+                                </th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-stone-200">
+                            <tbody className="divide-y divide-stone-300">
                               {plan.activities?.map((act, ai) => (
-                                <tr key={ai} className="hover:bg-stone-50">
-                                  <td className="py-2 px-3 align-top font-bold text-stone-900 border-r border-black text-[11px]">
-                                    {normalizeActivityName(act.name)}
+                                <tr key={act.id || ai} className={ai % 2 === 0 ? "bg-white" : "bg-stone-50/60"}>
+                                  {/* Cột 1: Hoạt động của GV (Gồm Tên hoạt động, Mục tiêu, Cách tiến hành) */}
+                                  <td className="py-2.5 px-3 align-top border-r border-black w-1/2 space-y-1.5">
+                                    <div className="font-bold text-black text-xs uppercase">
+                                      {normalizeActivityName(act.name)}
+                                    </div>
                                     {act.objective && (
-                                      <div className="text-[10px] font-normal text-stone-600 mt-0.5">
-                                        {isEn ? "Objective: " : "Mục tiêu: "}{act.objective}
+                                      <div className="text-[11px] text-stone-700 bg-stone-100 p-1.5 border border-stone-300">
+                                        <strong>{isEn ? "* Objective: " : "* Mục tiêu: "}</strong>{act.objective}
                                       </div>
                                     )}
+                                    <div className="text-stone-900 leading-relaxed whitespace-pre-line text-xs">
+                                      <strong>{isEn ? "* Procedure: " : "* Cách tiến hành: "}</strong>
+                                      <br />
+                                      {act.teacherActivity}
+                                    </div>
                                   </td>
-                                  <td className="py-2 px-3 align-top text-stone-800 border-r border-black text-[11px] leading-relaxed whitespace-pre-line">
-                                    {act.teacherActivity}
-                                  </td>
-                                  <td className="py-2 px-3 align-top text-stone-800 text-[11px] leading-relaxed whitespace-pre-line">
+
+                                  {/* Cột 2: Hoạt động của HS (Nội dung và hành động thực hiện của học sinh) */}
+                                  <td className="py-2.5 px-3 align-top text-stone-900 leading-relaxed whitespace-pre-line text-xs w-1/2">
+                                    <div className="font-bold text-stone-500 text-[10.5px] mb-1.5 uppercase">
+                                      {isEn ? "(Students' Response & Execution)" : "(Phản hồi & Thực hiện của HS)"}
+                                    </div>
                                     {act.studentActivity}
                                   </td>
                                 </tr>
@@ -668,17 +711,25 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
 
                 <div className="flex items-center space-x-2">
                   {isEditing ? (
-                    <button
-                      onClick={handleSaveEdit}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider border border-black shadow-[2px_2px_0px_rgba(0,0,0,0.3)] transition-colors"
-                    >
-                      <Check className="w-3.5 h-3.5" />
-                      <span>{isEn ? "Save Changes" : "Lưu Thay Đổi"}</span>
-                    </button>
+                    <>
+                      <button
+                        onClick={handleSaveEdit}
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider border border-black shadow-[2px_2px_0px_rgba(0,0,0,0.3)] transition-colors cursor-pointer"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>{isEn ? "Save Changes" : "Lưu Thay Đổi"}</span>
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-stone-200 hover:bg-stone-300 text-black text-[10px] font-bold uppercase tracking-wider border border-black transition-colors cursor-pointer"
+                      >
+                        <span>{isEn ? "Cancel" : "Hủy"}</span>
+                      </button>
+                    </>
                   ) : (
                     <button
                       onClick={handleStartEdit}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 text-black text-[10px] font-bold uppercase tracking-wider border border-black shadow-[1px_1px_0px_rgba(0,0,0,1)] transition-colors"
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 text-black text-[10px] font-bold uppercase tracking-wider border border-black shadow-[1px_1px_0px_rgba(0,0,0,1)] transition-colors cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                       <span>{isEn ? "Edit This Lesson" : "Chỉnh Sửa Bài Này"}</span>
@@ -992,9 +1043,21 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
 
               {/* SECTION III: 2-COLUMN TEACHING ACTIVITIES TABLE */}
               <div className="space-y-3 text-xs">
-                <h3 className="font-serif font-bold text-sm text-black border-b border-black pb-1 uppercase tracking-wide">
-                  {isEn ? "III. MAIN TEACHING ACTIVITIES" : "III. CÁC HOẠT ĐỘNG DẠY HỌC CHỦ YẾU (Bảng 2 cột Hoạt động GV - Hoạt động HS)"}
-                </h3>
+                <div className="flex items-center justify-between border-b border-black pb-1">
+                  <h3 className="font-serif font-bold text-sm text-black uppercase tracking-wide">
+                    {isEn ? "III. MAIN TEACHING ACTIVITIES" : "III. CÁC HOẠT ĐỘNG DẠY HỌC CHỦ YẾU (Bảng 2 cột Hoạt động GV - Hoạt động HS)"}
+                  </h3>
+                  {isEditing && (
+                    <button
+                      type="button"
+                      onClick={handleAddActivity}
+                      className="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 border border-black text-[10px] font-bold uppercase tracking-wider text-black flex items-center gap-1 shadow-[1px_1px_0px_rgba(0,0,0,1)] cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span>{isEn ? "Add Activity" : "Thêm Hoạt Động"}</span>
+                    </button>
+                  )}
+                </div>
 
                 <div className="overflow-x-auto border border-black">
                   <table className="w-full text-left border-collapse">
@@ -1009,29 +1072,93 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-black">
-                      {activePlan.activities.map((act, actIdx) => (
+                      {(isEditing ? (editFormData?.activities || []) : activePlan.activities).map((act, actIdx) => (
                         <tr key={act.id || actIdx} className={actIdx % 2 === 0 ? "bg-white" : "bg-stone-50/60"}>
                           {/* Teacher Column */}
-                          <td className="py-3 px-4 border-r border-black align-top space-y-2">
-                            <div className="font-bold text-black text-xs uppercase">
-                              {normalizeActivityName(act.name)}
-                            </div>
-                            <div className="text-xs text-stone-700 bg-stone-100 p-2 border border-stone-300">
-                              <strong>{isEn ? "* Objective: " : "* Mục tiêu: "}</strong>{act.objective}
-                            </div>
-                            <div className="text-stone-900 leading-relaxed whitespace-pre-line text-xs">
-                              <strong>{isEn ? "* Procedure: " : "* Cách tiến hành: "}</strong>
-                              <br />
-                              {act.teacherActivity}
-                            </div>
+                          <td className="py-3 px-4 border-r border-black align-top space-y-2 w-1/2">
+                            {isEditing ? (
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between gap-2">
+                                  <label className="text-[10px] font-bold text-stone-700 uppercase">
+                                    {isEn ? "Activity Name:" : "Tên hoạt động:"}
+                                  </label>
+                                  {(editFormData?.activities?.length || 0) > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveActivity(actIdx)}
+                                      className="text-rose-600 hover:text-rose-800 p-1 cursor-pointer"
+                                      title={isEn ? "Delete this activity" : "Xóa hoạt động này"}
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  )}
+                                </div>
+                                <input
+                                  type="text"
+                                  value={act.name}
+                                  onChange={(e) => handleActivityChange(actIdx, "name", e.target.value)}
+                                  className="w-full p-1.5 border border-black text-xs font-bold font-serif bg-white"
+                                />
+
+                                <label className="text-[10px] font-bold text-stone-700 uppercase block">
+                                  {isEn ? "Objective:" : "Mục tiêu hoạt động:"}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={act.objective}
+                                  onChange={(e) => handleActivityChange(actIdx, "objective", e.target.value)}
+                                  className="w-full p-1.5 border border-stone-400 text-xs font-serif bg-stone-50"
+                                />
+
+                                <label className="text-[10px] font-bold text-stone-700 uppercase block">
+                                  {isEn ? "Teacher's Procedure:" : "Cách tiến hành của giáo viên:"}
+                                </label>
+                                <textarea
+                                  rows={6}
+                                  value={act.teacherActivity}
+                                  onChange={(e) => handleActivityChange(actIdx, "teacherActivity", e.target.value)}
+                                  className="w-full p-2 border border-black text-xs font-serif bg-white leading-relaxed"
+                                />
+                              </div>
+                            ) : (
+                              <>
+                                <div className="font-bold text-black text-xs uppercase">
+                                  {normalizeActivityName(act.name)}
+                                </div>
+                                <div className="text-xs text-stone-700 bg-stone-100 p-2 border border-stone-300">
+                                  <strong>{isEn ? "* Objective: " : "* Mục tiêu: "}</strong>{act.objective}
+                                </div>
+                                <div className="text-stone-900 leading-relaxed whitespace-pre-line text-xs">
+                                  <strong>{isEn ? "* Procedure: " : "* Cách tiến hành: "}</strong>
+                                  <br />
+                                  {act.teacherActivity}
+                                </div>
+                              </>
+                            )}
                           </td>
 
                           {/* Student Column */}
-                          <td className="py-3 px-4 align-top text-stone-900 leading-relaxed whitespace-pre-line text-xs">
-                            <div className="font-bold text-stone-500 text-[11px] mb-2 uppercase">
-                              {isEn ? "(Students' Response & Execution)" : "(Phản hồi & Thực hiện của HS)"}
-                            </div>
-                            {act.studentActivity}
+                          <td className="py-3 px-4 align-top text-stone-900 leading-relaxed whitespace-pre-line text-xs w-1/2">
+                            {isEditing ? (
+                              <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-stone-700 uppercase block">
+                                  {isEn ? "Students' Activities:" : "Hoạt động của học sinh:"}
+                                </label>
+                                <textarea
+                                  rows={11}
+                                  value={act.studentActivity}
+                                  onChange={(e) => handleActivityChange(actIdx, "studentActivity", e.target.value)}
+                                  className="w-full p-2 border border-black text-xs font-serif bg-white leading-relaxed"
+                                />
+                              </div>
+                            ) : (
+                              <>
+                                <div className="font-bold text-stone-500 text-[11px] mb-2 uppercase">
+                                  {isEn ? "(Students' Response & Execution)" : "(Phản hồi & Thực hiện của HS)"}
+                                </div>
+                                {act.studentActivity}
+                              </>
+                            )}
                           </td>
                         </tr>
                       ))}
