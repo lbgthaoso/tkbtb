@@ -204,6 +204,11 @@ export const TeacherSelectModal: React.FC<TeacherSelectModalProps> = ({
                                   {isEn ? "Active" : "Đang chọn"}
                                 </span>
                               )}
+                              {teacher.hasSpecialNeedsStudent && (
+                                <span className="text-[9.5px] bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 font-bold uppercase tracking-wider">
+                                  {isEn ? "Special Needs" : "Có HS Khuyết Tật"}
+                                </span>
+                              )}
                             </div>
                             <p className="text-[11px] text-stone-600 mt-1 leading-snug">
                               {isEn ? "Class: " : "Lớp: "}<strong className="text-black font-semibold">{assignedClass}</strong> • {isEn ? "Subjects: " : "Môn phụ trách: "}{teacher.subjects.slice(0, 5).join(", ")}...

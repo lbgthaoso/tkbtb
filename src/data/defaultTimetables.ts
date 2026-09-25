@@ -16,11 +16,45 @@ export interface TeacherInfo {
   teachingPeriods: number;
   concurrentPeriods?: number;
   totalPeriods?: number;
+  hasSpecialNeedsStudent?: boolean;
+  specialNeedsDescription?: string;
+}
+
+export function isSpecialNeedsClassOrTeacher(className?: string, teacherName?: string): boolean {
+  if (!className && !teacherName) return false;
+  const cls = (className || "").trim().toUpperCase();
+  const name = (teacherName || "").trim().toLowerCase();
+  if (cls === "1A" || cls === "5B") return true;
+  if (name.includes("chi") || name.includes("huế") || name.includes("hue")) return true;
+  return false;
+}
+
+export function getDefaultSpecialNeedsDescription(className?: string, grade?: number): string {
+  const cls = (className || "").trim().toUpperCase();
+  if (cls === "1A" || grade === 1) {
+    return "Học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và nhận biết mặt chữ cái, chữ số cơ bản; tham gia hát múa, vận động, trò chơi cùng bạn theo khả năng; được cô giáo và các bạn quan tâm, khích lệ và hỗ trợ hoàn thành các nhiệm vụ học tập cơ bản.";
+  }
+  if (cls === "5B" || grade === 5) {
+    return "Học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức trọng tâm cốt lõi của bài học; tham gia trả lời các câu hỏi nhận biết và thảo luận nhóm theo mức độ nhận thức; tự tin hoàn thành bài tập cơ bản với sự đồng hành, giúp đỡ của giáo viên và các bạn trong tổ.";
+  }
+  return "Học sinh khuyết tật học hòa nhập: Tham gia các hoạt động học tập cùng bạn theo khả năng; nhận biết được kiến thức cốt lõi của bài học và hoàn thành các nhiệm vụ cơ bản với sự hỗ trợ của giáo viên và bạn bè.";
 }
 
 export const DEFAULT_TEACHERS: TeacherInfo[] = [
   // 10 GIÁO VIÊN CHỦ NHIỆM (KHỐI 1 ĐẾN KHỐI 5)
-  { id: "chi_1a", name: "Cô Chi", role: "GVCN 1A", type: "homeroom", assignedClasses: ["1A"], subjects: ["Tiếng Việt", "Toán", "HĐTN"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
+  { 
+    id: "chi_1a", 
+    name: "Cô Chi", 
+    role: "GVCN 1A (Có HS khuyết tật)", 
+    type: "homeroom", 
+    assignedClasses: ["1A"], 
+    subjects: ["Tiếng Việt", "Toán", "HĐTN"], 
+    teachingPeriods: 19, 
+    concurrentPeriods: 4, 
+    totalPeriods: 23,
+    hasSpecialNeedsStudent: true,
+    specialNeedsDescription: "Học sinh khuyết tật học hòa nhập (Lớp 1A - Cô Chi): Được làm quen và nhận biết mặt chữ cái, chữ số cơ bản; tham gia hát múa, vận động, trò chơi cùng bạn theo khả năng; được cô giáo và các bạn quan tâm, khích lệ và hỗ trợ hoàn thành các nhiệm vụ học tập cơ bản."
+  },
   { id: "nam_1b", name: "Trần Văn Bé Năm", role: "GVCN 1B", type: "homeroom", assignedClasses: ["1B"], subjects: ["Tiếng Việt", "Toán", "HĐTN"], teachingPeriods: 18, concurrentPeriods: 5, totalPeriods: 23 },
   { id: "trang_2a", name: "Cô Trang", role: "GVCN 2A", type: "homeroom", assignedClasses: ["2A"], subjects: ["Tiếng Việt", "Toán", "HĐTN"], teachingPeriods: 16, concurrentPeriods: 7, totalPeriods: 23 },
   { id: "chinh_2b", name: "Cô Chinh", role: "GVCN 2B", type: "homeroom", assignedClasses: ["2B"], subjects: ["Tiếng Việt", "Toán", "HĐTN", "TCTV"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
@@ -29,7 +63,19 @@ export const DEFAULT_TEACHERS: TeacherInfo[] = [
   { id: "hang_4a", name: "Lê Thị Hằng", role: "GVCN 4A", type: "homeroom", assignedClasses: ["4A"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
   { id: "yen_4b", name: "Cô Yến", role: "GVCN 4B", type: "homeroom", assignedClasses: ["4B"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
   { id: "tuan_5a", name: "Nguyễn Hoàng Tuấn", role: "GVCN 5A", type: "homeroom", assignedClasses: ["5A"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV", "Đạo đức"], teachingPeriods: 20, concurrentPeriods: 3, totalPeriods: 23 },
-  { id: "hue_5b", name: "Trần Thị Huế", role: "GVCN 5B", type: "homeroom", assignedClasses: ["5B"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
+  { 
+    id: "hue_5b", 
+    name: "Trần Thị Huế", 
+    role: "GVCN 5B (Có HS khuyết tật)", 
+    type: "homeroom", 
+    assignedClasses: ["5B"], 
+    subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV"], 
+    teachingPeriods: 19, 
+    concurrentPeriods: 4, 
+    totalPeriods: 23,
+    hasSpecialNeedsStudent: true,
+    specialNeedsDescription: "Học sinh khuyết tật học hòa nhập (Lớp 5B - Cô Huế): Nắm được kiến thức trọng tâm cốt lõi của bài học; tham gia trả lời các câu hỏi nhận biết và thảo luận nhóm theo mức độ nhận thức; tự tin hoàn thành bài tập cơ bản với sự đồng hành, giúp đỡ của giáo viên và các bạn trong tổ."
+  },
 
   // 8 GIÁO VIÊN CHUYÊN & BỘ MÔN (TOÀN TRƯỜNG)
   { id: "tam_an", name: "Cô Tâm", role: "GV Chuyên Âm nhạc (20 tiết)", type: "specialist", specialistSubject: "Âm nhạc", assignedClasses: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"], subjects: ["Âm nhạc", "AN", "BDAN"], teachingPeriods: 20, totalPeriods: 20 },
