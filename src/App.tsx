@@ -16,7 +16,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { MasterTimetable, LessonPlan, ScheduleItem, SchoolInfo, Grade, TeacherType } from "./types";
-import { DEFAULT_MASTER_TIMETABLE, DEFAULT_CLASSES, DEFAULT_TEACHERS, generateWeeklyScheduleFromTimetable, calculateWeekDateRange, isSpecialNeedsClassOrTeacher, getDefaultSpecialNeedsDescription } from "./data/defaultTimetables";
+import { DEFAULT_MASTER_TIMETABLE, DEFAULT_CLASSES, DEFAULT_TEACHERS, generateWeeklyScheduleFromTimetable, calculateWeekDateRange } from "./data/defaultTimetables";
 import { generateFullWeekLessonPlans } from "./data/curriculumData";
 import {
   exportTimetableDocx,
@@ -287,16 +287,11 @@ export function App() {
         tName = matchedHomeroom.name;
       }
     }
-    const isSpecialNeeds = isSpecialNeedsClassOrTeacher(cls, tName);
     const updatedInfo: SchoolInfo = {
       ...schoolInfo,
       className: cls,
       grade: !isNaN(gNum) && gNum >= 1 && gNum <= 5 ? gNum : schoolInfo.grade,
       teacherName: tName,
-      hasSpecialNeedsStudent: isSpecialNeeds,
-      specialNeedsDescription: isSpecialNeeds
-        ? (schoolInfo.specialNeedsDescription || getDefaultSpecialNeedsDescription(cls, gNum))
-        : "",
     };
     setSchoolInfo(updatedInfo);
     refreshScheduleAndPlans(masterTimetable, updatedInfo);
@@ -315,7 +310,6 @@ export function App() {
       }
     }
 
-    const isSpecialNeeds = isSpecialNeedsClassOrTeacher(targetClass, teacherName) || Boolean(matched?.hasSpecialNeedsStudent);
     const updatedInfo: SchoolInfo = {
       ...schoolInfo,
       teacherName,
@@ -324,10 +318,6 @@ export function App() {
       teacherType: matched ? (matched.type as TeacherType) : schoolInfo.teacherType,
       specialistSubject: matched?.specialistSubject || schoolInfo.specialistSubject,
       assignedClasses: matched?.assignedClasses || schoolInfo.assignedClasses,
-      hasSpecialNeedsStudent: isSpecialNeeds,
-      specialNeedsDescription: isSpecialNeeds
-        ? (matched?.specialNeedsDescription || getDefaultSpecialNeedsDescription(targetClass, targetGrade))
-        : "",
     };
     setSchoolInfo(updatedInfo);
     refreshScheduleAndPlans(masterTimetable, updatedInfo);
